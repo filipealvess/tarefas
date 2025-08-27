@@ -55,6 +55,11 @@ button {
     border-radius: 8px;
 }
 
+.feedback {
+    margin: 8px auto;
+    color: rgba(255, 255, 255, 0.5);
+}
+
 
 
 /* ---------- MENU ---------- */

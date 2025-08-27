@@ -1,0 +1,230 @@
+/* ---------- GLOBAL ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: transparent;
+    transition: all 0.3s;
+    list-style: none;
+}
+
+html {
+    --primary: #345995;
+    --primary-10rgba: rgba(52, 89, 149, 0.1);
+
+    background-color: #131313;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+}
+
+input {
+    height: 48px;
+    min-width: 0;
+    padding: 0 16px;
+    background-color: #252525;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+input:hover {
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+input:focus {
+    border: 2px solid var(--primary);
+}
+
+button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+
+
+/* ---------- MENU ---------- */
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 400px;
+    padding: 32px;
+    background-color: #252525;
+}
+
+.lists {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
+.list-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 24px;
+}
+
+.list-button div {
+    opacity: 0;
+}
+
+.list-button svg {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+
+.list-button:hover div {
+    opacity: 1;
+}
+
+.list-button.active {
+    background-color: var(--primary);
+    color: #FFFFFF;
+}
+
+.list-button.active span {
+    font-weight: 600;
+}
+
+.list-button:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+}
+
+button.new-list {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px 24px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+button.new-list span {
+    font-weight: 500;
+}
+
+button.new-list:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+
+/* ---------- MAIN ---------- */
+
+main {
+    margin: 80px auto 24px;
+    padding: 0 24px;
+    max-width: 750px;
+    width: 100%;
+}
+
+.input {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.input input {
+    flex: 1;
+    height: 48px;
+}
+
+.input button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--primary);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.actions p {
+    font-weight: 500;
+}
+
+.actions button {
+    color: var(--primary);
+    font-weight: 600;
+    height: 40px;
+    padding: 0 16px;
+}
+
+.actions button:hover {
+    background-color: var(--primary-10rgba);
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0;
+    cursor: pointer;
+}
+
+.task:active {
+    cursor: grabbing;
+}
+
+.task ~ .task {
+    border-top: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.task button:first-child svg {
+    stroke: var(--primary);
+}
+
+.task .delete {
+    opacity: 0;
+}
+
+.task:hover .delete {
+    opacity: 0.75;
+}
+
+.task[data-checked="true"] p {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.task p {
+    flex: 1;
+}

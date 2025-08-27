@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- STYLES -->
+    <link rel="stylesheet" href="./styles.css">
+
+    <title>Tarefas</title>
+</head>
+
+<body>
+    <aside class="menu">
+        <section class="lists">
+            <button class="list-button active">
+                <span>Pessoal</span>
+                <div><i data-feather="x"></i></div>
+            </button>
+
+            <button class="list-button">
+                <span>Profissional</span>
+                <div><i data-feather="x"></i></div>
+            </button>
+        </section>
+
+        <div class="divider"></div>
+
+        <button class="new-list">
+            <i data-feather="plus"></i>
+            <span>Nova lista</span>
+        </button>
+    </aside>
+
+    <main>
+        <section class="input">
+            <input
+                autofocus
+                type="text"
+                placeholder="Adicionar tarefa..."
+            />
+
+            <button>
+                <i data-feather="plus"></i>
+            </button>
+        </section>
+
+        <header class="actions">
+            <p>1 de 2</p>
+
+            <button>
+                Limpar concluídas
+            </button>
+        </header>
+
+        <ul class="tasks">
+            <li class="task">
+                <button>
+                    <i data-feather="square"></i>
+                </button>
+                
+                <p>Tarefa 1</p>
+
+                <button class="delete">
+                    <i data-feather="x"></i>
+                </button>
+            </li>
+
+            <li class="task" data-checked="true">
+                <button>
+                    <i data-feather="check-square"></i>
+                </button>
+                
+                <p>Tarefa 2</p>
+
+                <button class="delete">
+                    <i data-feather="x"></i>
+                </button>
+            </li>
+        </ul>
+    </main>
+
+    <!-- FEATHER ICONS -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <!-- SCRIPTS -->
+    <script src="./scripts.js"></script>
+</body>
+
+</html>

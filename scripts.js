@@ -71,6 +71,7 @@ function addList(text, index) {
         <button
             class="list-button ${index === 0 ? 'active' : ''}"
             data-id="${index}"
+            data-list="${text}"
             onClick="selectList(${index}, \'${text}\')"
         >
             <span>${text}</span>
@@ -254,6 +255,26 @@ window.addEventListener('load', () => {
     fillTasks();
 
     feather.replace();
+});
+
+window.addEventListener('keypress', (event) => {
+    if (event.target.nodeName.toUpperCase() !== 'BODY' ||
+        Number(event.key) === 0 ||
+        Number.isNaN(Number(event.key)) === true) {
+        return;
+    }
+
+    const lists = Array.from(document.querySelectorAll('.list-button'));
+    const selected = lists.at(Number(event.key) - 1);
+
+    if (selected === undefined) {
+        return;
+    }
+
+    const id = selected.getAttribute('data-id');
+    const text = selected.getAttribute('data-list');
+
+    selectList(id, text);
 });
 
 newListInput.addEventListener('input', (event) => {

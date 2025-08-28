@@ -10,7 +10,7 @@ const storage = {
 
 const dom = {
     get: (selector) => document.querySelector(selector),
-    all: (selector) => document.querySelectorAll(selector),
+    all: (selector) => Array.from(document.querySelectorAll(selector)),
 };
 
 
@@ -35,7 +35,7 @@ function setListsEmpty() {
 }
 
 function selectList(id, text) {
-    const list = lists.querySelector(`.list-button[data-id="${id}"]`);
+    const list = lists.querySelector(`.list-button[data-list-id="${id}"]`);
 
     if (list === null) {
         return;
@@ -50,7 +50,7 @@ function selectList(id, text) {
 }
 
 function deleteList(id, text) {
-    const list = dom.get(`.list-button[data-id="${id}"]`);
+    const list = dom.get(`.list-button[data-list-id="${id}"]`);
 
     if (list === null) {
         return;
@@ -60,7 +60,7 @@ function deleteList(id, text) {
 
     if (list.classList.contains('active') === true && sibling !== null) {
         sibling.classList.add('active');
-        currentList = sibling.getAttribute('data-list');
+        currentList = sibling.getAttribute('data-list-text');
     }
 
     const stored = storage.get('LISTS');
@@ -83,8 +83,8 @@ function addList(text, index) {
     lists.insertAdjacentHTML('beforeend', `
         <button
             class="list-button ${index === 0 ? 'active' : ''}"
-            data-id="${index}"
-            data-list="${text}"
+            data-list-id="${index}"
+            data-list-text="${text}"
             onClick="selectList(${index}, \'${text}\')"
         >
             <span>${text}</span>
@@ -121,7 +121,7 @@ function submitList(event) {
     let index = 0;
 
     if (lastList !== undefined) {
-        index = lastList.getAttribute('data-id') ?? 0;
+        index = lastList.getAttribute('data-list-id') ?? 0;
     }
 
     if (stored.length === 0) {
@@ -161,35 +161,35 @@ function setTasksEmpty() {
     tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
 }
 
-function checkTask(text) {
+function checkTask(id) {
     const stored = storage.get('TASKS') ?? [];
 
     storage.set('TASKS', stored.map(task => ({
         ...task,
-        checked: task.text === text ? !task.checked : task.checked,
+        checked: task.id === id ? !task.checked : task.checked,
     })));
 
     fillTasks();
 }
 
-function deleteTask(text) {
+function deleteTask(id) {
     const stored = storage.get('TASKS') ?? [];
 
-    storage.set('TASKS', stored.filter(task => task.text !== text));
+    storage.set('TASKS', stored.filter(task => task.id !== id));
 
     fillTasks();
 }
 
-function addTask(text, checked) {
+function addTask(task) {
     tasks.insertAdjacentHTML('beforeend', `
-        <li class="task" data-task="${text}" data-checked="${checked ?? false}">
-            <button onClick="checkTask(\'${text}\')">
-                <i data-feather="${checked === true ? 'check-square' : 'square'}"></i>
+        <li class="task">
+            <button onClick="checkTask(\'${task.id}\')">
+                <i data-feather="${task.checked === true ? 'check-square' : 'square'}"></i>
             </button>
             
-            <p>${text}</p>
+            <p>${task.text}</p>
 
-            <button class="delete" onClick="deleteTask(\'${text}\')">
+            <button class="delete" onClick="deleteTask(\'${task.id}\')">
                 <i data-feather="x"></i>
             </button>
         </li>
@@ -223,11 +223,7 @@ function fillTasks() {
     });
 
     const all = [...unchecked, ...checked];
-
-    all.forEach(task => {
-        addTask(task.text, task.checked);
-    });
-
+    all.forEach(task => addTask(task));
     updateTasksCounter(all.length, checked.length);
 
     feather.replace();
@@ -237,27 +233,20 @@ function submitTask(event) {
     event.preventDefault();
 
     const stored = storage.get('TASKS') ?? [];
-    const filtered = stored.filter(task => task.list === currentList);
-
-    if (filtered.length === 0) {
-        tasks.innerHTML = '';
-    }
 
     const task = {
+        id: `${newTaskInput.value}_${currentList}`,
         text: newTaskInput.value,
-        checked: false,
         list: currentList,
+        checked: false,
     };
 
-    addTask(task.text);
-    feather.replace();
     newTaskInput.value = '';
     newTaskButton.disabled = true;
 
     storage.set('TASKS', [...stored, task]);
 
-    const [checked, total] = tasksCounter.innerHTML.split(' de ');
-    updateTasksCounter(Number(total) + 1, checked);
+    fillTasks();
 }
 
 // ---------- EVENTS ---------- //
@@ -282,8 +271,8 @@ window.addEventListener('keypress', (event) => {
         return;
     }
 
-    const id = selected.getAttribute('data-id');
-    const text = selected.getAttribute('data-list');
+    const id = selected.getAttribute('data-list-id');
+    const text = selected.getAttribute('data-list-text');
 
     selectList(id, text);
 });

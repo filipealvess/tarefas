@@ -6,6 +6,9 @@ const DEFAULT_LISTS = ['Pessoal', 'Profissional'];
 const lists = document.querySelector('.lists');
 const newListInput = document.querySelector('#new-list-input');
 const newListButton = document.querySelector('#new-list-button');
+const tasks = document.querySelector('.tasks');
+const newTaskInput = document.querySelector('#new-task-input');
+const newTaskButton = document.querySelector('#new-task-button');
 
 
 // ---------- STATES ---------- //
@@ -108,10 +111,51 @@ function submitList(event) {
     newListInput.value = '';
     feather.replace();
 
-    const stored = JSON.parse(localStorage.getItem('LISTS') ?? []);
+    const stored = JSON.parse(localStorage.getItem('LISTS')) ?? [];
     localStorage.setItem('LISTS', JSON.stringify([...stored, text]));
 }
 
+// ---------- FUNCTIONS - TASKS ---------- //
+function setTasksEmpty() {
+    tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
+}
+
+function addTask(text) {
+    tasks.insertAdjacentHTML('beforeend', `
+        <li class="task" data-task="${text}">
+            <button>
+                <i data-feather="square"></i>
+            </button>
+            
+            <p>${text}</p>
+
+            <button class="delete">
+                <i data-feather="x"></i>
+            </button>
+        </li>
+    `);
+}
+
+function submitTask(event) {
+    event.preventDefault();
+
+    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+
+    if (stored.length === 0) {
+        tasks.innerHTML = '';
+    }
+
+    const task = {
+        text: newTaskInput.value,
+        checked: false,
+    };
+
+    addTask(task.text);
+    feather.replace();
+    newTaskInput.value = '';
+
+    localStorage.setItem('TASKS', JSON.stringify([...stored, task]));
+}
 
 // ---------- EVENTS ---------- //
 window.addEventListener('load', () => {
@@ -122,4 +166,8 @@ window.addEventListener('load', () => {
 
 newListInput.addEventListener('input', (event) => {
     newListButton.disabled = event.target.value.trim().length === 0;
+});
+
+newTaskInput.addEventListener('input', (event) => {
+    newTaskButton.disabled = event.target.value.trim().length === 0;
 });

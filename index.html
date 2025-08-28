@@ -37,17 +37,18 @@
     </aside>
 
     <main>
-        <section class="input">
+        <form class="input" onsubmit="submitTask(event)">
             <input
                 autofocus
                 type="text"
                 placeholder="Adicionar tarefa..."
+                id="new-task-input"
             />
 
-            <button>
+            <button id="new-task-button" disabled>
                 <i data-feather="plus"></i>
             </button>
-        </section>
+        </form>
 
         <header class="actions">
             <p>1 de 2</p>
@@ -58,29 +59,7 @@
         </header>
 
         <ul class="tasks">
-            <li class="task">
-                <button>
-                    <i data-feather="square"></i>
-                </button>
-                
-                <p>Tarefa 1</p>
-
-                <button class="delete">
-                    <i data-feather="x"></i>
-                </button>
-            </li>
-
-            <li class="task" data-checked="true">
-                <button>
-                    <i data-feather="check-square"></i>
-                </button>
-                
-                <p>Tarefa 2</p>
-
-                <button class="delete">
-                    <i data-feather="x"></i>
-                </button>
-            </li>
+            <p class="feedback">Nenhuma tarefa cadastrada</p>
         </ul>
     </main>
 

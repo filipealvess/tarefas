@@ -26,6 +26,10 @@ body {
     height: 100vh;
 }
 
+strong {
+    font-weight: 600;
+}
+
 input {
     height: 48px;
     min-width: 0;
@@ -63,6 +67,10 @@ button:disabled {
 .feedback {
     margin: 8px auto;
     color: rgba(255, 255, 255, 0.5);
+}
+
+.spacer {
+    flex: 1;
 }
 
 
@@ -127,6 +135,19 @@ button:disabled {
 
 .new-list {
     background-color: rgba(255, 255, 255, 0.03);
+}
+
+footer.tip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0.5;
+}
+
+footer.tip p {
+    font-size: 14px;
+    font-weight: 500;
 }
 
 

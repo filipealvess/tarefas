@@ -255,6 +255,7 @@ function submitTask(event) {
     addTask(task.text);
     feather.replace();
     newTaskInput.value = '';
+    newTaskButton.disabled = true;
 
     localStorage.setItem('TASKS', JSON.stringify([...stored, task]));
 

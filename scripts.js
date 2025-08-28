@@ -10,13 +10,27 @@ const lists = document.querySelector('.lists');
 let currentList = null;
 
 
-// ---------- FUNCTIONS ---------- //
+// ---------- FUNCTIONS - LISTS ---------- //
 function setListsEmpty() {
     lists.innerHTML = `<p class="feedback">Nenhuma lista cadastrada</p>`;
 }
 
+function selectList(id, text) {
+    const list = lists.querySelector(`.list-button[data-id="${id}"]`);
+
+    if (list === null) {
+        return;
+    }
+
+    const all = Array.from(document.querySelectorAll('.list-button'));
+
+    all.forEach(list => list.classList.remove('active'));
+    list.classList.add('active');
+    currentList = text;
+}
+
 function deleteList(id, text) {
-    const list = lists.querySelector(`[data-id="${id}"]`);
+    const list = lists.querySelector(`.list-button[data-id="${id}"]`);
 
     if (list === null) {
         return;
@@ -49,6 +63,7 @@ function addList(text, index) {
         <button
             class="list-button ${index === 0 ? 'active' : ''}"
             data-id="${index}"
+            onClick="selectList(${index}, \'${text}\')"
         >
             <span>${text}</span>
             <div onClick="deleteList(${index}, \'${text}\')">

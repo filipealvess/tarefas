@@ -2,26 +2,31 @@
 const DEFAULT_LISTS = ['Pessoal', 'Profissional'];
 
 
-// ---------- ELEMENTS ---------- //
-const lists = document.querySelector('.lists');
-const newListInput = document.querySelector('#new-list-input');
-const newListButton = document.querySelector('#new-list-button');
-const tasks = document.querySelector('.tasks');
-const newTaskInput = document.querySelector('#new-task-input');
-const newTaskButton = document.querySelector('#new-task-button');
-const tasksCounter = document.querySelector('#tasks-counter');
-const clearButton = document.querySelector('#clear-button');
-
-
-// ---------- STATES ---------- //
-let currentList = null;
-
-
 // ---------- MODULES ---------- //
 const storage = {
     get: (key) => (JSON.parse(localStorage.getItem(key)) || null),
     set: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
 };
+
+const dom = {
+    get: (selector) => document.querySelector(selector),
+    all: (selector) => document.querySelectorAll(selector),
+};
+
+
+// ---------- ELEMENTS ---------- //
+const lists = dom.get('.lists');
+const newListInput = dom.get('#new-list-input');
+const newListButton = dom.get('#new-list-button');
+const tasks = dom.get('.tasks');
+const newTaskInput = dom.get('#new-task-input');
+const newTaskButton = dom.get('#new-task-button');
+const tasksCounter = dom.get('#tasks-counter');
+const clearButton = dom.get('#clear-button');
+
+
+// ---------- STATES ---------- //
+let currentList = null;
 
 
 // ---------- FUNCTIONS - LISTS ---------- //
@@ -36,7 +41,7 @@ function selectList(id, text) {
         return;
     }
 
-    const all = Array.from(document.querySelectorAll('.list-button'));
+    const all = dom.all('.list-button');
 
     all.forEach(list => list.classList.remove('active'));
     list.classList.add('active');
@@ -45,7 +50,7 @@ function selectList(id, text) {
 }
 
 function deleteList(id, text) {
-    const list = lists.querySelector(`.list-button[data-id="${id}"]`);
+    const list = dom.get(`.list-button[data-id="${id}"]`);
 
     if (list === null) {
         return;
@@ -112,7 +117,7 @@ function submitList(event) {
     event.preventDefault();
 
     const stored = storage.get('LISTS') ?? [];
-    const lastList = Array.from(document.querySelectorAll('.list-button')).at(-1);
+    const lastList = dom.all('.list-button').at(-1);
     let index = 0;
 
     if (lastList !== undefined) {
@@ -270,7 +275,7 @@ window.addEventListener('keypress', (event) => {
         return;
     }
 
-    const lists = Array.from(document.querySelectorAll('.list-button'));
+    const lists = dom.all('.list-button');
     const selected = lists.at(Number(event.key) - 1);
 
     if (selected === undefined) {

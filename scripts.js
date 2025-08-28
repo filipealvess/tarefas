@@ -9,6 +9,7 @@ const newListButton = document.querySelector('#new-list-button');
 const tasks = document.querySelector('.tasks');
 const newTaskInput = document.querySelector('#new-task-input');
 const newTaskButton = document.querySelector('#new-task-button');
+const tasksCounter = document.querySelector('#tasks-counter');
 
 
 // ---------- STATES ---------- //
@@ -125,7 +126,7 @@ function addTask(text, checked) {
     tasks.insertAdjacentHTML('beforeend', `
         <li class="task" data-task="${text}" data-checked="${checked ?? false}">
             <button>
-                <i data-feather="square"></i>
+                <i data-feather="${checked === true ? 'check-square' : 'square'}"></i>
             </button>
             
             <p>${text}</p>
@@ -140,6 +141,8 @@ function addTask(text, checked) {
 function fillTasks() {
     let empty = true;
     const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    let checked = 0;
+    let total = 0;
 
     tasks.innerHTML = '';
 
@@ -148,9 +151,16 @@ function fillTasks() {
             return;
         }
 
+        if (task.checked === true) {
+            checked += 1;
+        }
+
         empty = false;
+        total += 1;
         addTask(task.text, task.checked);
     });
+
+    tasksCounter.innerHTML = `${checked} de ${total}`;
 
     if (empty === true) {
         setTasksEmpty();
@@ -180,6 +190,9 @@ function submitTask(event) {
     newTaskInput.value = '';
 
     localStorage.setItem('TASKS', JSON.stringify([...stored, task]));
+
+    const [checked, total] = tasksCounter.innerHTML.split(' de ');
+    tasksCounter.innerHTML = `${checked} de ${Number(total) + 1}`;
 }
 
 // ---------- EVENTS ---------- //

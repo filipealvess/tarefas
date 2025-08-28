@@ -122,10 +122,27 @@ function setTasksEmpty() {
     tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
 }
 
+function checkTask(text) {
+    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+
+    localStorage.setItem('TASKS', JSON.stringify(stored.map(task => {
+        if (task.text === text) {
+            return {
+                ...task,
+                checked: !task.checked,
+            };
+        }
+
+        return task;
+    })));
+
+    fillTasks();
+}
+
 function addTask(text, checked) {
     tasks.insertAdjacentHTML('beforeend', `
         <li class="task" data-task="${text}" data-checked="${checked ?? false}">
-            <button>
+            <button onClick="checkTask(\'${text}\')">
                 <i data-feather="${checked === true ? 'check-square' : 'square'}"></i>
             </button>
             

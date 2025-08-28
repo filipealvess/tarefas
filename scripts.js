@@ -124,6 +124,20 @@ function updateTasksCounter(total, checked) {
     clearButton.disabled = Number(checked) === 0;
 }
 
+function clearChecked() {
+    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+
+    localStorage.setItem('TASKS', JSON.stringify(stored.filter(task => {
+        if (task.list === currentList && task.checked === true) {
+            return false;
+        }
+
+        return true;
+    })));
+
+    fillTasks();
+}
+
 function setTasksEmpty() {
     tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
 }
@@ -187,7 +201,7 @@ function fillTasks() {
     const checked = [];
     const unchecked = [];
 
-    stored.forEach(task => {
+    filtered.forEach(task => {
         if (task.checked === true) {
             checked.push(task);
         }
@@ -212,8 +226,9 @@ function submitTask(event) {
     event.preventDefault();
 
     const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const filtered = stored.filter(task => task.list === currentList);
 
-    if (stored.length === 0) {
+    if (filtered.length === 0) {
         tasks.innerHTML = '';
     }
 

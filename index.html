@@ -22,10 +22,18 @@
 
         <div class="divider"></div>
 
-        <button class="new-list">
-            <i data-feather="plus"></i>
-            <span>Nova lista</span>
-        </button>
+        <form class="input" onsubmit="submitList(event)">
+            <input
+                class="new-list"
+                type="text"
+                placeholder="Nova lista..."
+                id="new-list-input"
+            />
+
+            <button id="new-list-button" disabled>
+                <i data-feather="plus"></i>
+            </button>
+        </form>
     </aside>
 
     <main>

@@ -55,6 +55,11 @@ button {
     border-radius: 8px;
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .feedback {
     margin: 8px auto;
     color: rgba(255, 255, 255, 0.5);
@@ -120,21 +125,8 @@ button {
     border-radius: 100px;
 }
 
-button.new-list {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 16px 24px;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-button.new-list span {
-    font-weight: 500;
-}
-
-button.new-list:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.new-list {
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
 

@@ -4,6 +4,8 @@ const DEFAULT_LISTS = ['Pessoal', 'Profissional'];
 
 // ---------- ELEMENTS ---------- //
 const lists = document.querySelector('.lists');
+const newListInput = document.querySelector('#new-list-input');
+const newListButton = document.querySelector('#new-list-button');
 
 
 // ---------- STATES ---------- //
@@ -91,10 +93,33 @@ function fillLists() {
     }
 }
 
+function submitList(event) {
+    event.preventDefault();
+
+    const lastList = Array.from(document.querySelectorAll('.list-button')).at(-1);
+    let index = 0;
+
+    if (lastList !== undefined) {
+        index = lastList.getAttribute('data-id') ?? 0;
+    }
+
+    const text = newListInput.value;
+    addList(text, Number(index) + 1);
+    newListInput.value = '';
+    feather.replace();
+
+    const stored = JSON.parse(localStorage.getItem('LISTS') ?? []);
+    localStorage.setItem('LISTS', JSON.stringify([...stored, text]));
+}
+
 
 // ---------- EVENTS ---------- //
 window.addEventListener('load', () => {
     fillLists();
 
     feather.replace();
+});
+
+newListInput.addEventListener('input', (event) => {
+    newListButton.disabled = event.target.value.trim().length === 0;
 });

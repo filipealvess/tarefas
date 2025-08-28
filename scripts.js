@@ -10,6 +10,7 @@ const tasks = document.querySelector('.tasks');
 const newTaskInput = document.querySelector('#new-task-input');
 const newTaskButton = document.querySelector('#new-task-button');
 const tasksCounter = document.querySelector('#tasks-counter');
+const clearButton = document.querySelector('#clear-button');
 
 
 // ---------- STATES ---------- //
@@ -118,6 +119,11 @@ function submitList(event) {
 }
 
 // ---------- FUNCTIONS - TASKS ---------- //
+function updateTasksCounter(total, checked) {
+    tasksCounter.innerHTML = `${checked} de ${total}`;
+    clearButton.disabled = Number(checked) === 0;
+}
+
 function setTasksEmpty() {
     tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
 }
@@ -139,6 +145,16 @@ function checkTask(text) {
     fillTasks();
 }
 
+function deleteTask(text) {
+    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+
+    localStorage.setItem('TASKS', JSON.stringify(stored.filter(task => (
+        task.text !== text
+    ))));
+
+    fillTasks();
+}
+
 function addTask(text, checked) {
     tasks.insertAdjacentHTML('beforeend', `
         <li class="task" data-task="${text}" data-checked="${checked ?? false}">
@@ -148,7 +164,7 @@ function addTask(text, checked) {
             
             <p>${text}</p>
 
-            <button class="delete">
+            <button class="delete" onClick="deleteTask(\'${text}\')">
                 <i data-feather="x"></i>
             </button>
         </li>
@@ -177,7 +193,7 @@ function fillTasks() {
         addTask(task.text, task.checked);
     });
 
-    tasksCounter.innerHTML = `${checked} de ${total}`;
+    updateTasksCounter(total, checked);
 
     if (empty === true) {
         setTasksEmpty();
@@ -209,7 +225,7 @@ function submitTask(event) {
     localStorage.setItem('TASKS', JSON.stringify([...stored, task]));
 
     const [checked, total] = tasksCounter.innerHTML.split(' de ');
-    tasksCounter.innerHTML = `${checked} de ${Number(total) + 1}`;
+    updateTasksCounter(Number(total) + 1, checked);
 }
 
 // ---------- EVENTS ---------- //

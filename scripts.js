@@ -32,6 +32,7 @@ function selectList(id, text) {
     all.forEach(list => list.classList.remove('active'));
     list.classList.add('active');
     currentList = text;
+    fillTasks();
 }
 
 function deleteList(id, text) {
@@ -120,9 +121,9 @@ function setTasksEmpty() {
     tasks.innerHTML = `<p class="feedback">Nenhuma tarefa cadastrada</p>`;
 }
 
-function addTask(text) {
+function addTask(text, checked) {
     tasks.insertAdjacentHTML('beforeend', `
-        <li class="task" data-task="${text}">
+        <li class="task" data-task="${text}" data-checked="${checked ?? false}">
             <button>
                 <i data-feather="square"></i>
             </button>
@@ -134,6 +135,29 @@ function addTask(text) {
             </button>
         </li>
     `);
+}
+
+function fillTasks() {
+    let empty = true;
+    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+
+    tasks.innerHTML = '';
+
+    stored.forEach(task => {
+        if (task.list !== currentList) {
+            return;
+        }
+
+        empty = false;
+        addTask(task.text, task.checked);
+    });
+
+    if (empty === true) {
+        setTasksEmpty();
+        return;
+    }
+
+    feather.replace();
 }
 
 function submitTask(event) {
@@ -148,6 +172,7 @@ function submitTask(event) {
     const task = {
         text: newTaskInput.value,
         checked: false,
+        list: currentList,
     };
 
     addTask(task.text);
@@ -160,6 +185,7 @@ function submitTask(event) {
 // ---------- EVENTS ---------- //
 window.addEventListener('load', () => {
     fillLists();
+    fillTasks();
 
     feather.replace();
 });

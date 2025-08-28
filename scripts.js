@@ -48,6 +48,7 @@ function deleteList(id, text) {
 
     if (list.classList.contains('active') === true && sibling !== null) {
         sibling.classList.add('active');
+        currentList = sibling.getAttribute('data-list');
     }
 
     const stored = JSON.parse(localStorage.getItem('LISTS'));
@@ -63,7 +64,10 @@ function deleteList(id, text) {
 
     if (sibling === null) {
         setListsEmpty();
+        currentList = '';
     }
+
+    fillTasks();
 }
 
 function addList(text, index) {
@@ -103,6 +107,7 @@ function fillLists() {
 function submitList(event) {
     event.preventDefault();
 
+    const stored = JSON.parse(localStorage.getItem('LISTS')) ?? [];
     const lastList = Array.from(document.querySelectorAll('.list-button')).at(-1);
     let index = 0;
 
@@ -110,13 +115,21 @@ function submitList(event) {
         index = lastList.getAttribute('data-id') ?? 0;
     }
 
+    if (stored.length === 0) {
+        lists.innerHTML = '';
+    }
+
     const text = newListInput.value;
-    addList(text, Number(index) + 1);
+    const id = Number(index) + 1;
+
+    addList(text, id);
     newListInput.value = '';
     feather.replace();
-
-    const stored = JSON.parse(localStorage.getItem('LISTS')) ?? [];
     localStorage.setItem('LISTS', JSON.stringify([...stored, text]));
+
+    if (stored.length === 0) {
+        selectList(id, text);
+    }
 }
 
 // ---------- FUNCTIONS - TASKS ---------- //

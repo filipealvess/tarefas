@@ -17,6 +17,13 @@ const clearButton = document.querySelector('#clear-button');
 let currentList = null;
 
 
+// ---------- MODULES ---------- //
+const storage = {
+    get: (key) => (JSON.parse(localStorage.getItem(key)) || null),
+    set: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+};
+
+
 // ---------- FUNCTIONS - LISTS ---------- //
 function setListsEmpty() {
     lists.innerHTML = `<p class="feedback">Nenhuma lista cadastrada</p>`;
@@ -51,13 +58,10 @@ function deleteList(id, text) {
         currentList = sibling.getAttribute('data-list');
     }
 
-    const stored = JSON.parse(localStorage.getItem('LISTS'));
+    const stored = storage.get('LISTS');
 
     if (stored !== null) {
-        localStorage.setItem(
-            'LISTS',
-            JSON.stringify(stored.filter(list => list !== text)),
-        );
+        storage.set('LISTS', stored.filter(list => list !== text));
     }
 
     list.remove();
@@ -87,8 +91,8 @@ function addList(text, index) {
 }
 
 function fillLists() {
-    const stored = localStorage.getItem('LISTS');
-    const values = stored === null ? DEFAULT_LISTS : JSON.parse(stored);
+    const stored = storage.get('LISTS');
+    const values = stored === null ? DEFAULT_LISTS : stored;
 
     if (values.length === 0) {
         setListsEmpty();
@@ -100,14 +104,14 @@ function fillLists() {
     currentList = values[0];
 
     if (stored === null) {
-        localStorage.setItem('LISTS', JSON.stringify(DEFAULT_LISTS));
+        storage.set('LISTS', DEFAULT_LISTS);
     }
 }
 
 function submitList(event) {
     event.preventDefault();
 
-    const stored = JSON.parse(localStorage.getItem('LISTS')) ?? [];
+    const stored = storage.get('LISTS') ?? [];
     const lastList = Array.from(document.querySelectorAll('.list-button')).at(-1);
     let index = 0;
 
@@ -125,7 +129,7 @@ function submitList(event) {
     addList(text, id);
     newListInput.value = '';
     feather.replace();
-    localStorage.setItem('LISTS', JSON.stringify([...stored, text]));
+    storage.set('LISTS', [...stored, text]);
 
     if (stored.length === 0) {
         selectList(id, text);
@@ -139,15 +143,11 @@ function updateTasksCounter(total, checked) {
 }
 
 function clearChecked() {
-    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const stored = storage.get('TASKS') ?? [];
 
-    localStorage.setItem('TASKS', JSON.stringify(stored.filter(task => {
-        if (task.list === currentList && task.checked === true) {
-            return false;
-        }
-
-        return true;
-    })));
+    storage.set('TASKS', stored.filter(task => (
+        task.list !== currentList || task.checked === false
+    )));
 
     fillTasks();
 }
@@ -157,28 +157,20 @@ function setTasksEmpty() {
 }
 
 function checkTask(text) {
-    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const stored = storage.get('TASKS') ?? [];
 
-    localStorage.setItem('TASKS', JSON.stringify(stored.map(task => {
-        if (task.text === text) {
-            return {
-                ...task,
-                checked: !task.checked,
-            };
-        }
-
-        return task;
+    storage.set('TASKS', stored.map(task => ({
+        ...task,
+        checked: task.text === text ? !task.checked : task.checked,
     })));
 
     fillTasks();
 }
 
 function deleteTask(text) {
-    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const stored = storage.get('TASKS') ?? [];
 
-    localStorage.setItem('TASKS', JSON.stringify(stored.filter(task => (
-        task.text !== text
-    ))));
+    storage.set('TASKS', stored.filter(task => task.text !== text));
 
     fillTasks();
 }
@@ -200,7 +192,7 @@ function addTask(text, checked) {
 }
 
 function fillTasks() {
-    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const stored = storage.get('TASKS') ?? [];
 
     tasks.innerHTML = '';
 
@@ -239,7 +231,7 @@ function fillTasks() {
 function submitTask(event) {
     event.preventDefault();
 
-    const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
+    const stored = storage.get('TASKS') ?? [];
     const filtered = stored.filter(task => task.list === currentList);
 
     if (filtered.length === 0) {
@@ -257,7 +249,7 @@ function submitTask(event) {
     newTaskInput.value = '';
     newTaskButton.disabled = true;
 
-    localStorage.setItem('TASKS', JSON.stringify([...stored, task]));
+    storage.set('TASKS', [...stored, task]);
 
     const [checked, total] = tasksCounter.innerHTML.split(' de ');
     updateTasksCounter(Number(total) + 1, checked);

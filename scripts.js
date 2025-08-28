@@ -172,33 +172,38 @@ function addTask(text, checked) {
 }
 
 function fillTasks() {
-    let empty = true;
     const stored = JSON.parse(localStorage.getItem('TASKS')) ?? [];
-    let checked = 0;
-    let total = 0;
 
     tasks.innerHTML = '';
 
+    const filtered = stored.filter(task => task.list === currentList);
+
+    if (filtered.length === 0) {
+        setTasksEmpty();
+        updateTasksCounter(0, 0);
+        return;
+    }
+
+    const checked = [];
+    const unchecked = [];
+
     stored.forEach(task => {
-        if (task.list !== currentList) {
-            return;
-        }
-
         if (task.checked === true) {
-            checked += 1;
+            checked.push(task);
         }
 
-        empty = false;
-        total += 1;
+        else {
+            unchecked.push(task);
+        }
+    });
+
+    const all = [...unchecked, ...checked];
+
+    all.forEach(task => {
         addTask(task.text, task.checked);
     });
 
-    updateTasksCounter(total, checked);
-
-    if (empty === true) {
-        setTasksEmpty();
-        return;
-    }
+    updateTasksCounter(all.length, checked.length);
 
     feather.replace();
 }

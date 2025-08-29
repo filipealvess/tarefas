@@ -243,6 +243,6 @@ main {
     opacity: 0.5;
 }
 
-.task p {
+.task p, .task input {
     flex: 1;
 }

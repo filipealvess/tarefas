@@ -180,9 +180,57 @@ function deleteTask(id) {
     fillTasks();
 }
 
+function updateTask(id) {
+    const input = dom.get(`[data-task-id="${id}"] input`);
+
+    if (input === null) {
+        return;
+    }
+
+    const stored = storage.get('TASKS') ?? [];
+
+    storage.set('TASKS', stored.map(task => ({
+        ...task,
+        text: task.id === id ? input.value.trim() || 'Tarefa' : task.text,
+    })));
+
+    fillTasks();
+}
+
+function enableUpdateTask(event, id) {
+    const tag = event.target.tagName.toLowerCase();
+
+    if (['li', 'p'].includes(tag) === false) {
+        return;
+    }
+
+    const p = dom.get(`[data-task-id="${id}"] p`);
+
+    if (p === null) {
+        return;
+    }
+
+    p.insertAdjacentHTML('beforebegin', `
+        <input
+            autofocus
+            value="${p.innerText}"
+            placeholder="Tarefa"
+            onBlur="updateTask(\'${id}\')"
+            onKeyDown="event.key === 'Enter' && updateTask(\'${id}\')"
+        />
+    `);
+
+    p.previousElementSibling?.focus();
+    p.remove();
+}
+
 function addTask(task) {
     tasks.insertAdjacentHTML('beforeend', `
-        <li class="task">
+        <li
+            class="task"
+            onClick="enableUpdateTask(event, \'${task.id}\')"
+            data-task-id="${task.id}"
+        >
             <button onClick="checkTask(\'${task.id}\')">
                 <i data-feather="${task.checked === true ? 'check-square' : 'square'}"></i>
             </button>

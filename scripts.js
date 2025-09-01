@@ -230,6 +230,7 @@ function addTask(task) {
             class="task"
             onClick="enableUpdateTask(event, \'${task.id}\')"
             data-task-id="${task.id}"
+            data-checked="${task.checked}"
         >
             <button onClick="checkTask(\'${task.id}\')">
                 <i data-feather="${task.checked === true ? 'check-square' : 'square'}"></i>

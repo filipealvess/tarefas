@@ -13,6 +13,89 @@ const dom = {
     all: (selector) => Array.from(document.querySelectorAll(selector)),
 };
 
+const dragAndDrop = {
+    getTarget: function(target) {
+        const allTasks = Array.from(tasks.children);
+
+        return allTasks.find(node => (
+            node === target ||
+            Array.from(node.childNodes).includes(target)
+        ));
+    },
+
+    dragStart: function(event) {
+        draggedNode = event.target;
+        event.target.classList.add('dragging');
+        event.dataTransfer.effectAllowed = 'move';
+    },
+
+    dragOver: function(event) {
+        event.preventDefault();
+
+        const target = this.getTarget(event.target);
+
+        if (target !== draggedNode) {
+            target?.classList?.add('over');
+        }
+    },
+
+    dragLeave: function(event) {
+        const target = this.getTarget(event.target);
+        target?.classList?.remove('over');
+    },
+
+    drop: function(event) {
+        event.preventDefault();
+
+        const target = this.getTarget(event.target);
+        target?.classList?.remove('over');
+
+        if (event.target === draggedNode) {
+            return;
+        }
+
+        const stored = storage.get('TASKS');
+        const targetId = target.getAttribute('data-task-id');
+        const targetChecked = target.getAttribute('data-checked');
+        const draggedId = draggedNode.getAttribute('data-task-id');
+        const draggedChecked = draggedNode.getAttribute('data-checked');
+
+        if (target === undefined ||
+            stored === null ||
+            draggedChecked === 'true' ||
+            targetChecked === 'true') {
+            return;
+        }
+
+        let draggedIndex;
+        let targetIndex;
+
+        stored.forEach((task, index) => {
+            if (task.id === draggedId) {
+                draggedIndex = index;
+            }
+
+            if (task.id === targetId) {
+                targetIndex = index;
+            }
+        });
+
+        if (draggedIndex === undefined || targetIndex === undefined) {
+            return;
+        }
+
+        const updated = [...stored];
+        [updated[draggedIndex], updated[targetIndex]] = [updated[targetIndex], updated[draggedIndex]];
+
+        storage.set('TASKS', updated);
+        fillTasks();
+    },
+
+    dragEnd: function(event) {
+      event.target.classList.remove('dragging');
+    }
+};
+
 
 // ---------- ELEMENTS ---------- //
 const lists = dom.get('.lists');
@@ -27,6 +110,7 @@ const clearButton = dom.get('#clear-button');
 
 // ---------- STATES ---------- //
 let currentList = null;
+let draggedNode = null;
 
 
 // ---------- FUNCTIONS - LISTS ---------- //
@@ -228,9 +312,15 @@ function addTask(task) {
     tasks.insertAdjacentHTML('beforeend', `
         <li
             class="task"
-            onClick="enableUpdateTask(event, \'${task.id}\')"
             data-task-id="${task.id}"
             data-checked="${task.checked}"
+            draggable=${task.checked === true ? 'false' : 'true'}
+            onClick="enableUpdateTask(event, \'${task.id}\')"
+            onDragStart="dragAndDrop.dragStart(event)"
+            onDragOver="dragAndDrop.dragOver(event)"
+            onDragEnd="dragAndDrop.dragEnd(event)"
+            onDragLeave="dragAndDrop.dragLeave(event)"
+            onDrop="dragAndDrop.drop(event)"
         >
             <button onClick="checkTask(\'${task.id}\')">
                 <i data-feather="${task.checked === true ? 'check-square' : 'square'}"></i>

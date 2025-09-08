@@ -272,10 +272,11 @@ function updateTask(id) {
     }
 
     const stored = storage.get('TASKS') ?? [];
+    const value = input.value.trim().replaceAll('\'', '"');
 
     storage.set('TASKS', stored.map(task => ({
         ...task,
-        text: task.id === id ? input.value.trim() || 'Tarefa' : task.text,
+        text: task.id === id ? value || 'Tarefa' : task.text,
     })));
 
     fillTasks();
@@ -297,7 +298,7 @@ function enableUpdateTask(event, id) {
     p.insertAdjacentHTML('beforebegin', `
         <input
             autofocus
-            value="${p.innerText}"
+            value='${p.innerText}'
             placeholder="Tarefa"
             onBlur="updateTask(\'${id}\')"
             onKeyDown="event.key === 'Enter' && updateTask(\'${id}\')"
@@ -373,9 +374,10 @@ function submitTask(event) {
 
     const stored = storage.get('TASKS') ?? [];
 
+    const id = newTaskInput.value.replace(/[\s_]/g, '-').replace(/['"]/g, '');
     const task = {
-        id: `${newTaskInput.value}_${currentList}`,
-        text: newTaskInput.value,
+        id: `${id}_${currentList}`,
+        text: newTaskInput.value.replaceAll('\'', '"'),
         list: currentList,
         checked: false,
     };

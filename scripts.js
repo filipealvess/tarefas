@@ -295,6 +295,9 @@ function enableUpdateTask(event, id) {
         return;
     }
 
+    const task = dragAndDrop.getTarget(p);
+    task.setAttribute('draggable', 'false');
+
     p.insertAdjacentHTML('beforebegin', `
         <input
             autofocus

@@ -167,6 +167,8 @@ main {
 
 .input {
     display: flex;
+    align-items: center;
+    position: relative;
     gap: 16px;
     width: 100%;
     margin-bottom: 40px;
@@ -175,6 +177,24 @@ main {
 .input input {
     flex: 1;
     height: 48px;
+}
+
+.input input:focus ~ p {
+    display: none;
+}
+
+.input p {
+    position: absolute;
+    right: 80px;
+    padding: 6px 10px;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    background-color: #2C2C2C;
+    color: #BCBCBC;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    z-index: 2;
 }
 
 .input button {

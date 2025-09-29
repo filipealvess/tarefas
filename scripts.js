@@ -402,6 +402,13 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('keypress', (event) => {
+    if (event.target.nodeName.toUpperCase() === 'BODY' &&
+        event.key === ' ') {
+        event.preventDefault();
+        newTaskInput.focus();
+        return;
+    }
+
     if (event.target.nodeName.toUpperCase() !== 'BODY' ||
         Number(event.key) === 0 ||
         Number.isNaN(Number(event.key)) === true) {

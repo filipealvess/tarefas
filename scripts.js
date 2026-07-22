@@ -85,7 +85,9 @@ const dragAndDrop = {
         }
 
         const updated = [...stored];
-        [updated[draggedIndex], updated[targetIndex]] = [updated[targetIndex], updated[draggedIndex]];
+        const dragged = updated[draggedIndex];
+        updated.splice(draggedIndex, 1);
+        updated.splice(targetIndex, 0, dragged);
 
         storage.set('TASKS', updated);
         fillTasks();
@@ -388,7 +390,7 @@ function submitTask(event) {
     newTaskInput.value = '';
     newTaskButton.disabled = true;
 
-    storage.set('TASKS', [...stored, task]);
+    storage.set('TASKS', [task, ...stored]);
 
     fillTasks();
 }
